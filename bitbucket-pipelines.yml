@@ -1,4 +1,3 @@
-#
 # This workflow integrates qwiet.ai preZero with Bitbucket
 # Visit https://docs.shiftleft.io for help
 image: golang:1.23
