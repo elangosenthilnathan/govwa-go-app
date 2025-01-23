@@ -1,0 +1,47 @@
+#
+# This workflow integrates qwiet.ai preZero with Bitbucket
+# Visit https://docs.shiftleft.io for help
+image: golang:1.23
+
+definitions:
+  steps:
+    - step: &GoBuildTest
+        name: Go Build Test
+        #image: shiftleft/scan-base:latest
+        script:
+          - go version
+          - go mod edit -replace github.com/gorilla/sessions=bitbucket.org/ericroku/sessions@1.2.1
+          - go vet -v 
+          - go test -v
+            
+    - step: &Qwiet-NextGen-Scan
+        name: Qwiet.AI NextGen Scan
+        image: shiftleft/core:latest
+        script: 
+          - curl https://cdn.shiftleft.io/download/sl > /usr/local/bin/sl && chmod a+rx /usr/local/bin/sl
+          - echo $BITBUCKET_COMMIT $BITBUCKET_BRANCH $BITBUCKET_REPO_SLUG
+          - sl analyze --version-id "$BITBUCKET_COMMIT" --app "$BITBUCKET_REPO_SLUG" --verbose --strict .
+             
+    - step: &Qwiet-Build-Rules-Validation
+        name: Qwiet.AI Build Rules Validation
+        script: 
+          - curl https://cdn.shiftleft.io/download/sl > /usr/local/bin/sl && chmod a+rx /usr/local/bin/sl
+          - echo $BITBUCKET_COMMIT $BITBUCKET_BRANCH $BITBUCKET_REPO_SLUG
+          - sl check-analysis --app "$BITBUCKET_REPO_SLUG" --branch "$BITBUCKET_BRANCH" --no-build-rules
+
+
+pipelines:
+  pull-requests:
+    feature/*:
+       - step: *Qwiet-NextGen-Scan
+  branches:
+    feature/*:
+       - step: *Qwiet-NextGen-Scan
+
+  default:
+    - step: *GoBuildTest  
+#    - step: *Qwiet-NextGen-Scan
+#    - step: *Qwiet-Build-Rules-Validation
+      
+      
+      
