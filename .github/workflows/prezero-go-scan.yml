@@ -46,5 +46,5 @@ jobs:
         run: |
           curl https://cdn.shiftleft.io/download/sl > /usr/local/bin/sl && chmod a+rx /usr/local/bin/sl
           echo ${{ github.sha }} ${{ github.ref_name }} ${{ github.repository }}
-          sl analyze --version-id "${{ github.sha }}" --app "${{ github.repository }}" --verbose --strict .
+          sl analyze --version-id "${{ github.sha }}" --app "${GITHUB_REPOSITORY_OWNER}_${GITHUB_REPOSITORY#*/}" --verbose --strict .
 
