@@ -1,6 +1,6 @@
 module bitbucket.org/ericroku/govwa-go-app
 
-replace  github.com/gorilla/sessions  => bitbucket.org/ericroku/sessions v1.4.0
+replace bitbucket.org/ericroku/sessions => github.com/gorilla/sessions v1.4.0
 
 go 1.23.4
 
