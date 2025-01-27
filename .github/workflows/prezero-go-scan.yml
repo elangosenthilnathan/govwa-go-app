@@ -15,6 +15,10 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v3
 
+      - name: Configure Git for HTTPS
+        run: |
+          git config --global url."https://${{ secrets.BITBUCKET_USERNAME }}:${{ secrets.BITBUCKET_APP_PASSWORD }}@bitbucket.org/".insteadOf "https://bitbucket.org/"
+
       - name: Set up Go
         uses: actions/setup-go@v4
         with:
@@ -23,7 +27,8 @@ jobs:
       - name: Go Build and Test
         run: |
           go version
-          go mod edit -replace github.com/gorilla/sessions=bitbucket.org/ericroku/sessions@1.2.1
+#          go mod edit -replace github.com/gorilla/sessions=bitbucket.org/ericroku/sessions@1.2.1
+          go mod tidy
           go vet -v
           go test -v
 
