@@ -31,15 +31,20 @@ jobs:
           go vet -v
           go test -v
 
-#  qwiet-nextgen-scan:
-#    runs-on: ubuntu-latest
-#    steps:
-#      - name: Checkout Code
-#        uses: actions/checkout@v3
+  qwiet-nextgen-scan:
+    runs-on: ubuntu-latest
+    container: shiftleft/core:latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
 
-#      - name: Qwiet.AI NextGen Scan
-#        run: |
-#          curl https://cdn.shiftleft.io/download/sl > /usr/local/bin/sl && chmod a+rx /usr/local/bin/sl
-#          echo ${{ github.sha }} ${{ github.ref_name }} ${{ github.repository }}
-#          sl analyze --version-id "${{ github.sha }}" --app "${{ github.repository }}" --verbose --strict .
+      - name: Configure Git for HTTPS
+        run: |
+          git config --global url."https://${{ secrets.BITBUCKET_USERNAME }}:${{ secrets.BITBUCKET_APP_PASSWORD }}@bitbucket.org/".insteadOf "https://bitbucket.org/"
+
+      - name: Qwiet.AI NextGen Scan
+        run: |
+          curl https://cdn.shiftleft.io/download/sl > /usr/local/bin/sl && chmod a+rx /usr/local/bin/sl
+          echo ${{ github.sha }} ${{ github.ref_name }} ${{ github.repository }}
+          sl analyze --version-id "${{ github.sha }}" --app "${{ github.repository }}" --verbose --strict .
 
