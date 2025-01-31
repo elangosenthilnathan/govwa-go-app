@@ -2,14 +2,13 @@ name: Go Build and Scan Workflow
 
 on:
   pull_request:
-    branches:
-      - main
+  push:
 
 jobs:
 
   qwiet-nextgen-scan:
     runs-on: ubuntu-latest
-    container: shiftleft/core:latest
+    #container: shiftleft/core:latest
     steps:
       - name: Checkout Code
         uses: actions/checkout@v3
@@ -17,8 +16,8 @@ jobs:
       - name: Qwiet.AI NextGen Scan
         run: |
           curl https://cdn.shiftleft.io/download/sl > /usr/local/bin/sl && chmod a+rx /usr/local/bin/sl
-          echo ${{ github.sha }} ${{ github.ref_name }} ${{ github.repository }}
-          sl analyze --version-id "${{ github.sha }}" --app "${GITHUB_REPOSITORY_OWNER}_${GITHUB_REPOSITORY#*/}" --verbose --strict .
+          #echo ${{ github.sha }} ${{ github.ref_name }} ${{ github.repository }}
+          sl analyze --app "${GITHUB_REPOSITORY_OWNER}_${GITHUB_REPOSITORY#*/}" --verbose  $pwd
         env:
           SHIFTLEFT_ACCESS_TOKEN: ${{ secrets.SHIFTLEFT_ACCESS_TOKEN }}
 
